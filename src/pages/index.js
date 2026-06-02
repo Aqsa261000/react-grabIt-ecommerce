@@ -6,6 +6,10 @@ import Products from "./products";
 import WishList from "./wishList";
 import Checkout from "./checkout";
 import OrderConfirm from "./orderConfirm";
+import SignUp from "./signUp";
+import Login from "./login";
+
+
 
 export {
   Home,
@@ -16,4 +20,6 @@ export {
   WishList,
   Checkout,
   OrderConfirm,
+  SignUp,
+  Login
 };

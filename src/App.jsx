@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import {
   Cart,
   Checkout,
   Home,
+  Login,
   NotFound,
   OrderConfirm,
   ProductDetail,
   Products,
+  SignUp,
   WishList,
 } from "./pages";
-import { DefaultLayout } from "./components/layout";
+import { AuthLayout, DefaultLayout } from "./components/layout";
 import "./App.css";
 import CartState from "./context/Cart/CartState";
 import ToastState from "./context/Toast/ToastState";
@@ -19,9 +21,13 @@ import WishListState from "./context/WishList/WishListState";
 import SearchState from "./context/Search/SearchState";
 import ProductState from "./context/Product/ProductState";
 import OrderState from "./context/Order/OrderState";
+import AuthState from "./context/Auth/AuthState";
+import { AppRoutes } from "./routes";
+
 
 const App = () => {
   return (
+    <AuthState>
     <ProductState>
       <PopupState>
         <ToastState>
@@ -29,18 +35,7 @@ const App = () => {
             <CartState>
               <WishListState>
                 <OrderState>
-                  <Routes>
-                    <Route element={<DefaultLayout />}>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/products" element={<Products />} />
-                      <Route path="/product/:id" element={<ProductDetail />} />
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/wishList" element={<WishList />} />
-                      <Route path="/checkout" element={<Checkout />} />
-                      <Route path="/order-confirm" element={<OrderConfirm />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Route>
-                  </Routes>
+                  <AppRoutes/>
                 </OrderState>
               </WishListState>
             </CartState>
@@ -48,6 +43,7 @@ const App = () => {
         </ToastState>
       </PopupState>
     </ProductState>
+    </AuthState>
   );
 };
 
