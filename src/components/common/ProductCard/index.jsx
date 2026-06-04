@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProductStatus } from "../../../utils";
 import CartContext from "../../../context/Cart/CartContext";
@@ -7,6 +7,7 @@ import { WishListContext } from "../../../context/WishList/WishListContext";
 import { CheckIcon, HeartIcon, HeartOutlinedIcon } from "../../../assets";
 
 const ProductCard = ({ product, status }) => {
+  
   const { addToCart, cartData } = useContext(CartContext);
   const { showToast } = useContext(ToastContext);
   const { wishListData, addToWishList, deleteWishListProduct } =
@@ -14,6 +15,7 @@ const ProductCard = ({ product, status }) => {
   const navigate = useNavigate();
 
   const addToCartHandler = (e, product) => {
+    e.preventDefault();
     e.stopPropagation();
     const status = getProductStatus(product, cartData, wishListData);
     if (status === "inCart") {
@@ -48,7 +50,6 @@ const ProductCard = ({ product, status }) => {
   };
   return (
     <div
-      key={product.id}
       className="relative bg-white rounded-xl p-4 shadow cursor-pointer z-10 grid"
       onClick={() => navigate(`/product/${product.id}`)}
     >
@@ -74,6 +75,7 @@ const ProductCard = ({ product, status }) => {
       </button>
       <button
         className="rounded-full p-2 border-2 absolute z-20 top-2 right-2 cursor-pointer"
+        type="button"
         onClick={(e) => addToWishListHandler(e, product)}
       >
         {status === "inWishList" ? (

@@ -1,9 +1,10 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import CartContext from "../../../context/Cart/CartContext";
 import { useNavigate } from "react-router-dom";
 import PopupContext from "../../../context/Popup/PopupContext";
 
 const CartDefault = () => {
+  
   const {
     cartData,
     increaseQuantity,
@@ -89,6 +90,7 @@ const CartDefault = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             increaseQuantity(item);
+                            console.log(item,"item")
                           }}
                         >
                           +
@@ -204,7 +206,7 @@ const CartDefault = () => {
                 onClick={() =>
                   showPopup(
                     "Are you sure you want to delete all items from cart?",
-                    clearCart,
+                    ()=>clearCart(),
                   )
                 }
               >

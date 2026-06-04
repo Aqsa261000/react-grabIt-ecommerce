@@ -2,91 +2,94 @@ import React, { useEffect, useMemo, useState } from "react";
 import CartContext from "./CartContext";
 import PopupContext from "../Popup/PopupContext";
 import { WishListContext } from "../WishList/WishListContext";
+import { createCartItem, deleteCartItem, fetchCart, updateCartItem } from "../../services/cartService";
 
 const CartState = (props) => {
-  const [cartData, setCartData] = useState(() => {
-    const data = localStorage.getItem("cart");
-    try {
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [cartData, setCartData] = useState([]);
 
   const totalItems = useMemo(() => {
     return cartData.reduce((acc, item) => acc + item.quantity, 0);
   }, [cartData]);
 
-  const addToCart = (selectedProduct, quantity = 1) => {
+  const addToCart = async (selectedProduct, quantity = 1) => {
     let status = "";
-    setCartData((prevData) => {
-      //firstly we will find that the same cart item we want to add is present in the cart or not
-      const existingItemInCart = prevData.find(
-        (cartProduct) => cartProduct.id === selectedProduct.id,
-      );
-      // agar same item cart mein already parhi wi hai toh prevData par map lagaa kar ussi item ki quantity increase kar do by 1 warna aise hi rehne do
-      if (existingItemInCart) {
-        status = "inCart";
-        //map function only updates the item of an array by the given condition by checking all the items
-        return prevData.map((cartProduct) =>
-          cartProduct.id === selectedProduct.id
-            ? { ...cartProduct, quantity: cartProduct.quantity + quantity }
-            : cartProduct,
-        );
-      }
-      status = "added";
-      return [...prevData, { ...selectedProduct, quantity }];
-    });
+
+    const existingItemInCart = cartData.find((cartItem)=>cartItem.productId === selectedProduct.id)
+    if(existingItemInCart){
+      status = "inCart"
+      const updateItem = await updateCartItem(existingItemInCart.id,{...existingItemInCart,quantity:existingItemInCart.quantity+quantity})
+      setCartData((prevData)=>prevData.map((cartItem)=>cartItem.id===selectedProduct.id?updateItem:cartItem))
+    return;
+    }
+    status = "added"
+    const newItem = {...selectedProduct,quantity,productId:selectedProduct.id}
+    const addItem = await createCartItem(newItem)
+
+    setCartData((prevData)=>[...prevData,addItem])
+    
     return status;
+    
   };
 
-  const clearCart = () => {
+  const clearCart = async () => {
+    for(let i=0;i<cartData.length;i++){
+      const chunk = cartData.slice(i,i+20)
+    
+    await Promise.all(chunk.map((item)=>deleteCartItem(item.id)))
+    }
     setCartData([]);
   };
 
-  const increaseQuantity = (selectedProduct) => {
+  const increaseQuantity = async (selectedProduct) => {
+    
+    const incQuantity = await updateCartItem(selectedProduct.id,{...selectedProduct,quantity:selectedProduct.quantity+1})
     setCartData((prevCart) => {
       return prevCart.map((item) =>
         item.id === selectedProduct.id
-          ? { ...item, quantity: item.quantity + 1 }
+          ? incQuantity
           : item,
       );
     });
+  
   };
 
-  const decreaseQuantity = (selectedProduct) => {
+  const decreaseQuantity = async (selectedProduct) => {
+    if(selectedProduct.quantity>1){
+    const decQuantity = await updateCartItem(selectedProduct.id,{...selectedProduct,quantity:selectedProduct.quantity-1})
     setCartData((prevCart) => {
       return prevCart
         .map((item) =>
           item.id === selectedProduct.id
-            ? { ...item, quantity: item.quantity - 1 }
+            ? decQuantity
             : item,
         )
         .filter((item) => item.quantity > 0);
-    });
+    })}else{
+    deleteCartItem(selectedProduct.id)
+    setCartData((prevData) =>
+      prevData.filter((item) => item.id !== selectedProduct.id),
+    );
+  }
   };
 
   const deleteProduct = (selectedProduct) => {
+    deleteCartItem(selectedProduct.id)
     setCartData((prevData) =>
       prevData.filter((item) => item.id !== selectedProduct.id),
     );
   };
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartData));
-  }, [cartData]);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const data = localStorage.getItem("cart");
-      setCartData(data ? JSON.parse(data) : []);
-    };
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  useEffect(()=>{
+    const getData = async ()=>{
+      try{
+        const data = await fetchCart()
+        setCartData(data)
+      }catch(err){
+        console.log(err)
+      }
+    }
+    getData()
+  },[])
 
   return (
     <CartContext.Provider

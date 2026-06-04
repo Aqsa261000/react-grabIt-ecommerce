@@ -71,7 +71,7 @@ const ProductsDefault = () => {
           const status = getProductStatus(product, cartData, wishListData);
           return (
             // product card design
-            <ProductCard product={product} status={status}/>
+            <ProductCard product={product} status={status} key={product.id}/>
           );
         })}
       </div>

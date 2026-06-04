@@ -6,7 +6,7 @@ export const fetchCart = async()=>{
 };
 
 export const createCartItem = async(product)=>{
-    const res = await api.post(`/cart`,product)
+    const res = await api.post("/cart",product)
     return res.data;
 };
 
