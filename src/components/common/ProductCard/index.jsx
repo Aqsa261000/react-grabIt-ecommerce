@@ -34,6 +34,7 @@ const ProductCard = ({ product, status }) => {
   };
 
   const addToWishListHandler = (e, product) => {
+    e.preventDefault();
     e.stopPropagation();
     const status = getProductStatus(product, cartData, wishListData);
     if (status === "inCart") {

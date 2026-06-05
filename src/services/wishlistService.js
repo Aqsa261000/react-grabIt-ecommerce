@@ -5,7 +5,19 @@ export const getWishlist = async()=>{
     return res.data;
 };
 
-export const saveProductToWishlist = async()=>{
-    const res = await api.post(`/wishlist`)
+export const createWishListItem = async(product)=>{
+    const res = await api.post(`/wishlist`,product)
+    return res.data;
+};
+
+
+export const updateWishListItem = async(id,product)=>{
+    const res = await api.patch(`/wishlist/${id}`,product)
+    return res.data;
+};
+
+
+export const deleteWishListItem = async(id)=>{
+    const res = await api.delete(`/wishlist/${id}`)
     return res.data;
 };

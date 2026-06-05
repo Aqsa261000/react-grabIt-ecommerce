@@ -1,10 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import CartContext from "./CartContext";
 import PopupContext from "../Popup/PopupContext";
 import { WishListContext } from "../WishList/WishListContext";
-import { createCartItem, deleteCartItem, fetchCart, updateCartItem } from "../../services/cartService";
+import {
+  createCartItem,
+  deleteCartItem,
+  fetchCart,
+  updateCartItem,
+} from "../../services/cartService";
 
 const CartState = (props) => {
+  // const {wishListData,deleteWishListProduct} = useContext(WishListContext)
   const [cartData, setCartData] = useState([]);
 
   const totalItems = useMemo(() => {
@@ -12,84 +18,95 @@ const CartState = (props) => {
   }, [cartData]);
 
   const addToCart = async (selectedProduct, quantity = 1) => {
-    let status = "";
-
-    const existingItemInCart = cartData.find((cartItem)=>cartItem.productId === selectedProduct.id)
-    if(existingItemInCart){
-      status = "inCart"
-      const updateItem = await updateCartItem(existingItemInCart.id,{...existingItemInCart,quantity:existingItemInCart.quantity+quantity})
-      setCartData((prevData)=>prevData.map((cartItem)=>cartItem.id===selectedProduct.id?updateItem:cartItem))
-    return;
+    let status = ""
+    const existingItemInCart = cartData.find(
+      (cartItem) => cartItem.productId === selectedProduct.id,
+    );
+    
+    if (existingItemInCart) {
+      status="inCart"
+      const updateItem = await updateCartItem(existingItemInCart.id, {
+        ...existingItemInCart,
+        quantity: existingItemInCart.quantity + quantity,
+      });
+      setCartData((prevData) =>
+        prevData.map((cartItem) =>
+          cartItem.id === existingItemInCart.id ? updateItem : cartItem,
+        ),
+      );
+      return;
     }
-    status = "added"
-    const newItem = {...selectedProduct,quantity,productId:selectedProduct.id}
-    const addItem = await createCartItem(newItem)
+    
+    const newItem = {
+      ...selectedProduct,
+      quantity,
+      productId: selectedProduct.id,
+    };
+    const addItem = await createCartItem(newItem);
 
-    setCartData((prevData)=>[...prevData,addItem])
-    
-    return status;
-    
+    setCartData((prevData) => [...prevData, addItem]);
+
+    return status
   };
 
   const clearCart = async () => {
-    for(let i=0;i<cartData.length;i++){
-      const chunk = cartData.slice(i,i+20)
-    
-    await Promise.all(chunk.map((item)=>deleteCartItem(item.id)))
+    for (let i = 0; i < cartData.length; i++) {
+      const chunk = cartData.slice(i, i + 20);
+
+      await Promise.all(chunk.map((item) => deleteCartItem(item.id)));
     }
     setCartData([]);
   };
 
   const increaseQuantity = async (selectedProduct) => {
-    
-    const incQuantity = await updateCartItem(selectedProduct.id,{...selectedProduct,quantity:selectedProduct.quantity+1})
+    const incQuantity = await updateCartItem(selectedProduct.id, {
+      ...selectedProduct,
+      quantity: selectedProduct.quantity + 1,
+    });
     setCartData((prevCart) => {
       return prevCart.map((item) =>
-        item.id === selectedProduct.id
-          ? incQuantity
-          : item,
+        item.id === selectedProduct.id ? incQuantity : item,
       );
     });
-  
   };
 
   const decreaseQuantity = async (selectedProduct) => {
-    if(selectedProduct.quantity>1){
-    const decQuantity = await updateCartItem(selectedProduct.id,{...selectedProduct,quantity:selectedProduct.quantity-1})
-    setCartData((prevCart) => {
-      return prevCart
-        .map((item) =>
-          item.id === selectedProduct.id
-            ? decQuantity
-            : item,
-        )
-        .filter((item) => item.quantity > 0);
-    })}else{
-    deleteCartItem(selectedProduct.id)
-    setCartData((prevData) =>
-      prevData.filter((item) => item.id !== selectedProduct.id),
-    );
-  }
+    if (selectedProduct.quantity > 1) {
+      const decQuantity = await updateCartItem(selectedProduct.id, {
+        ...selectedProduct,
+        quantity: selectedProduct.quantity - 1,
+      });
+      setCartData((prevCart) => {
+        return prevCart
+          .map((item) => (item.id === selectedProduct.id ? decQuantity : item))
+          .filter((item) => item.quantity > 0);
+      });
+    } else {
+      deleteCartItem(selectedProduct.id);
+      setCartData((prevData) =>
+        prevData.filter((item) => item.id !== selectedProduct.id),
+      );
+    }
   };
 
   const deleteProduct = (selectedProduct) => {
-    deleteCartItem(selectedProduct.id)
+    deleteCartItem(selectedProduct.id);
     setCartData((prevData) =>
       prevData.filter((item) => item.id !== selectedProduct.id),
     );
   };
 
-  useEffect(()=>{
-    const getData = async ()=>{
-      try{
-        const data = await fetchCart()
-        setCartData(data)
-      }catch(err){
-        console.log(err)
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await fetchCart();
+        setCartData(data);
+      } catch (err) {
+        console.log(err);
       }
-    }
-    getData()
-  },[])
+    };
+    getData();
+  }, []);
 
   return (
     <CartContext.Provider

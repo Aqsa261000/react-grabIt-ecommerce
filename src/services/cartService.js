@@ -11,8 +11,8 @@ export const createCartItem = async(product)=>{
 };
 
 
-export const updateCartItem = async(id,data)=>{
-    const res = await api.patch(`/cart/${id}`,data)
+export const updateCartItem = async(id,product)=>{
+    const res = await api.patch(`/cart/${id}`,product)
     return res.data;
 };
 

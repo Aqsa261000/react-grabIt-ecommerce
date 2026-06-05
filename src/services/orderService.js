@@ -5,7 +5,7 @@ export const getOrders = async()=>{
     return res.data;
 };
 
-export const saveOrder = async()=>{
-    const res = await api.post(`/orders`)
+export const createOrder = async(order)=>{
+    const res = await api.post(`/orders`,order)
     return res.data;
 };
