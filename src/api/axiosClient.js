@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "../utils/helpers/auth/auth";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://grabit-backend.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
