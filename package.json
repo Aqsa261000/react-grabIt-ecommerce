@@ -4,16 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "json-server db.json --port 5000",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server":"json-server --watch db.json --port 5000"
+    "server": "json-server --watch db.json --port 5000"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.2.4",
     "axios": "^1.15.2",
+    "json-server": "^1.0.0-beta.15",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.76.0",
