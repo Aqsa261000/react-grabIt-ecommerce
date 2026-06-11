@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import ProductContext from "./ProductContext";
-import { getAllProducts,getSingleProduct } from "../../services/productService";
+import {
+  getAllProducts,
+  getSingleProduct,
+} from "../../services/productService";
 
 const ProductState = (props) => {
   const [products, setProducts] = useState([]);
-  const [singleProduct,setSingleProduct] = useState(null)
+  const [singleProduct, setSingleProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [singleLoading, setSingleLoading] = useState(false);
 
   const [error, setError] = useState("");
   const [singleError, setSingleError] = useState("");
 
-
   const getProducts = async () => {
     try {
       setLoading(true);
-      setSingleError("")
+      setSingleError("");
       const response = await getAllProducts();
       setProducts(response);
     } catch {
@@ -25,11 +27,10 @@ const ProductState = (props) => {
     }
   };
 
-  
   const getProductbyId = async (id) => {
     try {
       setSingleLoading(true);
-      setSingleError("")
+      setSingleError("");
       const response = await getSingleProduct(id);
       setSingleProduct(response);
     } catch {
@@ -44,7 +45,17 @@ const ProductState = (props) => {
     getProducts();
   }, []);
   return (
-    <ProductContext.Provider value={{ products, error, loading,getProductbyId,singleLoading,singleError ,singleProduct}}>
+    <ProductContext.Provider
+      value={{
+        products,
+        error,
+        loading,
+        getProductbyId,
+        singleLoading,
+        singleError,
+        singleProduct,
+      }}
+    >
       {props.children}
     </ProductContext.Provider>
   );

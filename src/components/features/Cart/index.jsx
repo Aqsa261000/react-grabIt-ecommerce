@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import PopupContext from "../../../context/Popup/PopupContext";
 
 const CartDefault = () => {
-  
   const {
     cartData,
     increaseQuantity,
@@ -90,7 +89,6 @@ const CartDefault = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             increaseQuantity(item);
-                            console.log(item,"item")
                           }}
                         >
                           +
@@ -206,7 +204,7 @@ const CartDefault = () => {
                 onClick={() =>
                   showPopup(
                     "Are you sure you want to delete all items from cart?",
-                    ()=>clearCart(),
+                    () => clearCart(),
                   )
                 }
               >
@@ -215,7 +213,7 @@ const CartDefault = () => {
               <button
                 type="button"
                 className="bg-[#ffae00] hover:bg-[#e7a005] px-2 py-2 text-white rounded-xl font-semibold cursor-pointer"
-                onClick={()=>navigate('/checkout')}
+                onClick={() => navigate("/checkout")}
               >
                 Proceed to Checkout
               </button>

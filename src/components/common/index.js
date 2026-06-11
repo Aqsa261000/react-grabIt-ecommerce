@@ -6,7 +6,6 @@ import Popup from "./Popup";
 import Carousel from "./Carousel";
 import ProductCard from "./ProductCard";
 import CustomInput from "./CustomInput";
-import AuthNavbar from "./AuthNavbar";
 
 export {
   Navbar,
@@ -17,5 +16,4 @@ export {
   Carousel,
   ProductCard,
   CustomInput,
-  AuthNavbar
 };

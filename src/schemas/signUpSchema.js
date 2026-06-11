@@ -4,10 +4,10 @@ export const signUpSchema = yup.object({
   fullName: yup
     .string()
     .matches(
-      /^(\w+)\s+(\w+.*)$/, 
-      'Please enter your full name (example: firoz danish)'
+      /^(\w+)\s+(\w+.*)$/,
+      "Please enter your full name (example: firoz danish)",
     )
-    .min(3,"Full Name should be atleast 4 characters")
+    .min(3, "Full Name should be atleast 4 characters")
     .required("Full Name is required"),
   emailAddress: yup
     .string()

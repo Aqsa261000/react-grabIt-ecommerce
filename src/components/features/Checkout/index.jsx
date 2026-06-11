@@ -3,6 +3,8 @@ import { CustomInput } from "../../common";
 import { useNavigate } from "react-router-dom";
 import CartContext from "../../../context/Cart/CartContext";
 import OrderContext from "../../../context/Order/OrderContext";
+import { CheckIcon, CrossIcon } from "../../../assets";
+import ToastContext from "../../../context/Toast/ToastContext";
 
 const CheckoutDefault = () => {
   const [formData, setFormData] = useState({
@@ -15,20 +17,21 @@ const CheckoutDefault = () => {
     emailAddress: "",
     paymentMethod: "",
   });
-  const [errors,setErrors]=useState({})
+  const [errors, setErrors] = useState({});
   const { cartData, clearCart } = useContext(CartContext);
   const { createOrder } = useContext(OrderContext);
+  const { showToast } = useContext(ToastContext);
   const navigate = useNavigate();
   const shipping = 50;
 
   const onChangeHandler = (e) => {
-    const {name,value}=e.target
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
 
-    setErrors((prevErrors)=>({...prevErrors,[name]:""}))
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
   const totalCartPrice = useMemo(() => {
@@ -42,56 +45,56 @@ const CheckoutDefault = () => {
   }, [totalCartPrice, shipping]);
 
   const validateForm = () => {
-  const newErrors = {};
+    const newErrors = {};
 
-  if (!formData.fullName.trim()) {
-    newErrors.fullName = "Full name is required";
-  }
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
 
-  if (!formData.country.trim()) {
-    newErrors.country = "Country is required";
-  }
+    if (!formData.country.trim()) {
+      newErrors.country = "Country is required";
+    }
 
-  if (!formData.city.trim()) {
-    newErrors.city = "City is required";
-  }
+    if (!formData.city.trim()) {
+      newErrors.city = "City is required";
+    }
 
-  if (!formData.address.trim()) {
-    newErrors.address = "Address is required";
-  }
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required";
+    }
 
-  if (!formData.postalCode.trim()) {
-    newErrors.postalCode = "Postal code is required";
-  }
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = "Postal code is required";
+    }
 
-  if (!formData.phoneNumber.trim()) {
-    newErrors.phoneNumber = "Phone number is required";
-  }
+    if (!formData.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Phone number is required";
+    }
 
-  if (!formData.emailAddress.trim()) {
-    newErrors.emailAddress = "Email is required";
-  }
+    if (!formData.emailAddress.trim()) {
+      newErrors.emailAddress = "Email is required";
+    }
 
-  if (!formData.paymentMethod.trim()) {
-    newErrors.paymentMethod = "Please select the payment method";
-  }
+    if (!formData.paymentMethod.trim()) {
+      newErrors.paymentMethod = "Please select the payment method";
+    }
 
-  return newErrors;
-};
-  const handleCreateOrder = (e) => {
+    return newErrors;
+  };
+  const handleCreateOrder = async (e) => {
     e.preventDefault();
     if (cartData.length === 0) {
-  navigate("/cart");
-  return;
-}
+      navigate("/cart");
+      return;
+    }
 
-const validationErrors = validateForm()
-if(Object.keys(validationErrors).length > 0){
-  setErrors(validationErrors)
-  return;
-}
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-setErrors({})
+    setErrors({});
     const order = {
       id: Date.now(),
       customer: formData,
@@ -101,9 +104,14 @@ setErrors({})
       createdAt: new Date().toISOString(),
     };
 
-    createOrder(order);
-    clearCart();
-    navigate("/order-confirm");
+    const createdOrder = await createOrder(order);
+    if (!createOrder) {
+      showToast("Order failed, Try again!", CrossIcon);
+      return;
+    }
+    showToast("Order created successfully!", CheckIcon);
+    navigate("/order-confirm", { state: createdOrder });
+    await clearCart();
   };
 
   return (
@@ -204,11 +212,11 @@ setErrors({})
                 onChange={onChangeHandler}
                 name="paymentMethod"
               />
-              <p className="font-medium  px-5 py-4">
-                Cash on Delivery
-              </p>
+              <p className="font-medium  px-5 py-4">Cash on Delivery</p>
             </div>
-            {errors.paymentMethod && (<p className="text-red-500 text-sm">{errors.paymentMethod}</p>)}
+            {errors.paymentMethod && (
+              <p className="text-red-500 text-sm">{errors.paymentMethod}</p>
+            )}
           </div>
         </div>
         <button
@@ -222,7 +230,10 @@ setErrors({})
         <h1 className="font-bold text-2xl pb-5">Order Summary</h1>
         <div className="max-h-[540px] overflow-y-auto overflow-x-hidden text-[12px]">
           {cartData.map((item) => (
-            <div className="grid grid-cols-3 py-5 justify-end items-center" key={item.id}>
+            <div
+              className="grid grid-cols-3 py-5 justify-end items-center"
+              key={item.id}
+            >
               <img
                 src={item.image}
                 alt="cart-item-image"

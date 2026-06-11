@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useSearchParams } from "react-router-dom";
 import { ProductCard, Spinner, Toast } from "../../common";
 import CartContext from "../../../context/Cart/CartContext";
 import {
@@ -15,14 +15,13 @@ import SearchContext from "../../../context/Search/SearchContext";
 import ProductContext from "../../../context/Product/ProductContext";
 
 const ProductsDefault = () => {
-  const {products,error,loading}=useContext(ProductContext)
-  const {cartData} = useContext(CartContext)
+  const { products, error, loading } = useContext(ProductContext);
+  const { cartData } = useContext(CartContext);
   const { search } = useContext(SearchContext);
-  const { wishListData } =
-    useContext(WishListContext);
-  const [category, setCategory] = useState("all");
+  const { wishListData } = useContext(WishListContext);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-
+  const category = searchParams.get("category") || "all";
 
   // const filteredProducts =
   //   search.trim() === ""
@@ -31,14 +30,18 @@ const ProductsDefault = () => {
   //         item.title.toLowerCase().includes(search.toLowerCase()),
   //       );
 
-  const filteredProducts = products.filter((product)=>{
-    const matchesSearch = product.title.toLowerCase().includes(search.toLowerCase())
-    const matchesCategory= category==="all" || (category === "clothing"?product.category.includes("clothing"):product.category === category)
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.title
+      .toLowerCase()
+      .includes(search.toLowerCase());
+    const matchesCategory =
+      category === "all" ||
+      (category === "clothing"
+        ? product.category.includes("clothing")
+        : product.category === category);
 
-    return matchesSearch && matchesCategory
-
-  })
-
+    return matchesSearch && matchesCategory;
+  });
 
   if (loading)
     return (
@@ -57,11 +60,18 @@ const ProductsDefault = () => {
         {["all", "clothing", "jewelery", "electronics"].map(
           (cat, index, arr) => (
             <span className="flex gap-2" key={cat}>
-              <button onClick={()=>{setCategory(cat);}} className={`capitalize ${category === cat ? `font-bold text-xl`:`font-medium text-lg`}`}>
+              <button
+                onClick={() => {
+                  setSearchParams(cat === "all" ? {} : { category: cat });
+                }}
+                className={`capitalize ${category === cat ? `font-bold text-xl` : `font-medium text-lg`}`}
+              >
                 {cat}
               </button>
 
-              {index < arr.length - 1 && <span className="text-xl hidden sm:block">|</span>}
+              {index < arr.length - 1 && (
+                <span className="text-xl hidden sm:block">|</span>
+              )}
             </span>
           ),
         )}
@@ -71,7 +81,7 @@ const ProductsDefault = () => {
           const status = getProductStatus(product, cartData, wishListData);
           return (
             // product card design
-            <ProductCard product={product} status={status} key={product.id}/>
+            <ProductCard product={product} status={status} key={product.id} />
           );
         })}
       </div>

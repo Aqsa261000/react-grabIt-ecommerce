@@ -21,10 +21,9 @@ const WishListDefault = () => {
       showToast("Item already exists in cart", CheckIcon);
       return;
     }
-    
+
     wishListAddToCart(product);
     showToast("Item moved to cart successfully", CheckIcon);
-    
   };
   return (
     <div className="px-4 lg:px-32 py-7 max-w-full h-full">

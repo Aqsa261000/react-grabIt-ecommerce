@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { CarouselImage1 } from "../../../../assets";
 import { CustomInput } from "../../../common";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,10 +9,16 @@ import { signupUser } from "../../../../services/authService";
 
 const SignUpDefault = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
-  const onSubmitHandler = async(data) => {
-    await signupUser(data);
-    navigate("/login");
+  const onSubmitHandler = async (data) => {
+    try {
+      setError("");
+      await signupUser(data);
+      navigate("/login");
+    } catch (err) {
+      setError(err.message || "Login failed, please try again.");
+    }
   };
 
   const {
@@ -72,6 +78,7 @@ const SignUpDefault = () => {
             error={errors.confirmPassword?.message}
           />
         </div>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <button
           type="submit"
           className="bg-black hover:bg-gray-700 text-xl px-15 py-4 rounded-xl text-white font-bold mb-2 mt-5"

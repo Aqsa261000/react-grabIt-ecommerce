@@ -7,7 +7,6 @@ import { WishListContext } from "../../../context/WishList/WishListContext";
 import { CheckIcon, HeartIcon, HeartOutlinedIcon } from "../../../assets";
 
 const ProductCard = ({ product, status }) => {
-  
   const { addToCart, cartData } = useContext(CartContext);
   const { showToast } = useContext(ToastContext);
   const { wishListData, addToWishList, deleteWishListProduct } =

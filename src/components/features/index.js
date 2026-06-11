@@ -7,6 +7,17 @@ import WishListDefault from "./WishList";
 import CheckoutDefault from "./Checkout";
 import OrderConfirmDefault from "./OrderConfirm";
 import { LoginDefault } from "./auth";
-import {SignUpDefault} from "./auth";
+import { SignUpDefault } from "./auth";
 
-export {CartDefault,HomeDefault,NotFoundDefault,ProductDetailDefault,ProductsDefault,WishListDefault,CheckoutDefault,OrderConfirmDefault,LoginDefault,SignUpDefault}
+export {
+  CartDefault,
+  HomeDefault,
+  NotFoundDefault,
+  ProductDetailDefault,
+  ProductsDefault,
+  WishListDefault,
+  CheckoutDefault,
+  OrderConfirmDefault,
+  LoginDefault,
+  SignUpDefault,
+};

@@ -9,8 +9,6 @@ import OrderConfirm from "./orderConfirm";
 import SignUp from "./signUp";
 import Login from "./login";
 
-
-
 export {
   Home,
   Cart,
@@ -21,5 +19,5 @@ export {
   Checkout,
   OrderConfirm,
   SignUp,
-  Login
+  Login,
 };

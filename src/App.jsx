@@ -12,7 +12,7 @@ import {
   SignUp,
   WishList,
 } from "./pages";
-import { AuthLayout, DefaultLayout } from "./components/layout";
+import { DefaultLayout } from "./components/layout";
 import "./App.css";
 import CartState from "./context/Cart/CartState";
 import ToastState from "./context/Toast/ToastState";
@@ -24,25 +24,24 @@ import OrderState from "./context/Order/OrderState";
 import AuthState from "./context/Auth/AuthState";
 import { AppRoutes } from "./routes";
 
-
 const App = () => {
   return (
     <AuthState>
-    <ProductState>
-      <PopupState>
-        <ToastState>
-          <SearchState>
-            <CartState>
-              <WishListState>
-                <OrderState>
-                  <AppRoutes/>
-                </OrderState>
-              </WishListState>
-            </CartState>
-          </SearchState>
-        </ToastState>
-      </PopupState>
-    </ProductState>
+      <ProductState>
+        <PopupState>
+          <ToastState>
+            <SearchState>
+              <CartState>
+                <WishListState>
+                  <OrderState>
+                    <AppRoutes />
+                  </OrderState>
+                </WishListState>
+              </CartState>
+            </SearchState>
+          </ToastState>
+        </PopupState>
+      </ProductState>
     </AuthState>
   );
 };

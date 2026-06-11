@@ -8,9 +8,10 @@ import {
   fetchCart,
   updateCartItem,
 } from "../../services/cartService";
+import AuthContext from "../Auth/AuthContext";
 
 const CartState = (props) => {
-  // const {wishListData,deleteWishListProduct} = useContext(WishListContext)
+  const { user } = useContext(AuthContext);
   const [cartData, setCartData] = useState([]);
 
   const totalItems = useMemo(() => {
@@ -18,13 +19,13 @@ const CartState = (props) => {
   }, [cartData]);
 
   const addToCart = async (selectedProduct, quantity = 1) => {
-    let status = ""
+    let status = "";
     const existingItemInCart = cartData.find(
       (cartItem) => cartItem.productId === selectedProduct.id,
     );
-    
+
     if (existingItemInCart) {
-      status="inCart"
+      status = "inCart";
       const updateItem = await updateCartItem(existingItemInCart.id, {
         ...existingItemInCart,
         quantity: existingItemInCart.quantity + quantity,
@@ -36,17 +37,18 @@ const CartState = (props) => {
       );
       return;
     }
-    
+
     const newItem = {
       ...selectedProduct,
       quantity,
       productId: selectedProduct.id,
+      userId: user.id,
     };
     const addItem = await createCartItem(newItem);
 
     setCartData((prevData) => [...prevData, addItem]);
 
-    return status
+    return status;
   };
 
   const clearCart = async () => {
@@ -99,14 +101,15 @@ const CartState = (props) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchCart();
+        if (!user) return;
+        const data = await fetchCart(user.id);
         setCartData(data);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     };
     getData();
-  }, []);
+  }, [user]);
 
   return (
     <CartContext.Provider

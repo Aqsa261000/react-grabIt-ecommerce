@@ -9,10 +9,16 @@ import AuthContext from "../../../../context/Auth/AuthContext";
 
 const LoginDefault = () => {
   const navigate = useNavigate();
-  const {login} = useContext(AuthContext)
+  const { login } = useContext(AuthContext);
+  const [error, setError] = useState("");
 
-  const onSubmitHandler = async(data) => {
-    await login(data,navigate)
+  const onSubmitHandler = async (data) => {
+    try {
+      setError("");
+      await login(data, navigate);
+    } catch (err) {
+      setError(err.message || "Login failed, please try again.");
+    }
   };
 
   const {
@@ -51,6 +57,7 @@ const LoginDefault = () => {
             error={errors.password?.message}
           />
         </div>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
         <button
           type="submit"
           className="bg-black hover:bg-gray-700 text-xl px-15 py-4 rounded-xl text-white font-bold mb-2 mt-5"
