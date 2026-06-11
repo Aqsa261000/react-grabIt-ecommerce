@@ -3,7 +3,7 @@
 A full-featured e-commerce web app built with React.
 
 ## 🔗 Live Demo
-[Add your Vercel link here after deploying]
+[https://react-grab-it-ecommerce.vercel.app](https://react-grab-it-ecommerce.vercel.app)
 
 ## ✨ Features
 - Browse, search & filter products by category
