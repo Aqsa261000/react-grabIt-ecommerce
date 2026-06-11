@@ -30,3 +30,7 @@ npm run server
 
 # 3. Start frontend (port 5173)
 npm run dev
+
+## 📝 Note
+The backend is powered by json-server (mock REST API) for demo purposes.
+In a production app this would be replaced with a real backend (e.g. Node.js + Express + MongoDB).
