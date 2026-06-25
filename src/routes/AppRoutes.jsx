@@ -41,10 +41,10 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-      </Route>
-
       {/* ── 404 ─────────────────────────────── */}
       <Route path="*" element={<NotFound />} />
+      </Route>
+
     </Routes>
   );
 };

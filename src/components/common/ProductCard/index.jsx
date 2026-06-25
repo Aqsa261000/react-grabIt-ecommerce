@@ -5,17 +5,20 @@ import CartContext from "../../../context/Cart/CartContext";
 import ToastContext from "../../../context/Toast/ToastContext";
 import { WishListContext } from "../../../context/WishList/WishListContext";
 import { CheckIcon, HeartIcon, HeartOutlinedIcon } from "../../../assets";
+import { useAuthAction } from "../../../hooks";
 
 const ProductCard = ({ product, status }) => {
   const { addToCart, cartData } = useContext(CartContext);
   const { showToast } = useContext(ToastContext);
   const { wishListData, addToWishList, deleteWishListProduct } =
     useContext(WishListContext);
+  const requireAuth = useAuthAction()
   const navigate = useNavigate();
 
   const addToCartHandler = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
+    requireAuth(()=>{
     const status = getProductStatus(product, cartData, wishListData);
     if (status === "inCart") {
       addToCart(product);
@@ -30,11 +33,13 @@ const ProductCard = ({ product, status }) => {
     }
     addToCart(product);
     showToast("Item added to cart successfully", CheckIcon);
+  })
   };
 
   const addToWishListHandler = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
+    requireAuth(()=>{
     const status = getProductStatus(product, cartData, wishListData);
     if (status === "inCart") {
       showToast("Item already exists in cart", CheckIcon);
@@ -47,6 +52,7 @@ const ProductCard = ({ product, status }) => {
     }
     addToWishList(product);
     showToast("Item added to wishlist successfully", CheckIcon);
+  })
   };
   return (
     <div

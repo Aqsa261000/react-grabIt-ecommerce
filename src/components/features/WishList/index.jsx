@@ -5,17 +5,20 @@ import ToastContext from "../../../context/Toast/ToastContext";
 import { CheckIcon, CrossIcon } from "../../../assets";
 import { useNavigate } from "react-router-dom";
 import { getProductStatus } from "../../../utils";
+import { useAuthAction } from "../../../hooks";
 
 const WishListDefault = () => {
   const { cartData } = useContext(CartContext);
   const { wishListData, deleteWishListProduct, wishListAddToCart } =
     useContext(WishListContext);
   const { showToast, toasts } = useContext(ToastContext);
+  const requireAuth=useAuthAction()
   const navigate = useNavigate();
 
   const addToCartHandler = (e, product) => {
     e.stopPropagation();
     const status = getProductStatus(product, cartData, wishListData);
+    requireAuth(()=>{
 
     if (status === "inCart") {
       showToast("Item already exists in cart", CheckIcon);
@@ -24,6 +27,7 @@ const WishListDefault = () => {
 
     wishListAddToCart(product);
     showToast("Item moved to cart successfully", CheckIcon);
+  })
   };
   return (
     <div className="px-4 lg:px-32 py-7 max-w-full h-full">

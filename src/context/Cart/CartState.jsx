@@ -19,6 +19,7 @@ const CartState = (props) => {
   }, [cartData]);
 
   const addToCart = async (selectedProduct, quantity = 1) => {
+    
     let status = "";
     const existingItemInCart = cartData.find(
       (cartItem) => cartItem.productId === selectedProduct.id,
